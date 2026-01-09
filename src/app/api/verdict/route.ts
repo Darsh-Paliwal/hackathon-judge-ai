@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import { submissions } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
     try {
@@ -10,19 +10,20 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
+        const submission = submissions.find(s => s.id === id);
+
+        if (!submission) {
+            return NextResponse.json({ error: "Submission not found" }, { status: 404 });
+        }
+
         // Map verdict (SHORTLIST/REJECT/HOLD) to status (shortlisted/rejected/hold)
-        let status = 'pending';
+        let status: any = 'pending';
         if (verdict === 'SHORTLIST') status = 'shortlisted';
         else if (verdict === 'REJECT') status = 'rejected';
         else if (verdict === 'HOLD') status = 'hold';
 
-        const stmt = db.prepare(`
-            UPDATE submissions 
-            SET admin_verdict = ?, status = ? 
-            WHERE id = ?
-        `);
-
-        stmt.run(verdict, status, id);
+        submission.admin_verdict = verdict;
+        submission.status = status;
 
         return NextResponse.json({ success: true, verdict, status });
     } catch (error) {

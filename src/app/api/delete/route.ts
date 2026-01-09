@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import { submissions } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
     try {
@@ -9,12 +9,13 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Missing ID" }, { status: 400 });
         }
 
-        const stmt = db.prepare('DELETE FROM submissions WHERE id = ?');
-        const result = stmt.run(id);
+        const index = submissions.findIndex(s => s.id === id);
 
-        if (result.changes === 0) {
+        if (index === -1) {
             return NextResponse.json({ error: "Submission not found" }, { status: 404 });
         }
+
+        submissions.splice(index, 1);
 
         return NextResponse.json({ success: true });
     } catch (error) {

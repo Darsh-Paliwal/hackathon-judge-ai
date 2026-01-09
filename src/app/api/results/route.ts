@@ -1,18 +1,19 @@
-
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import { submissions } from '@/lib/db';
 
 export const dynamic = 'force-dynamic'; // Ensure no caching
 
 export async function GET() {
     try {
-        const stmt = db.prepare('SELECT * FROM submissions ORDER BY upload_timestamp DESC');
-        const rows = stmt.all();
+        // Sort by timestamp desc
+        const sorted = [...submissions].sort((a, b) =>
+            new Date(b.upload_timestamp).getTime() - new Date(a.upload_timestamp).getTime()
+        );
 
-        // Parse the JSON string back to object for the frontend
-        const results = rows.map((row: any) => ({
+        // Parse JSON string evaluation if needed, or if stored as string in upload, parse it here
+        const results = sorted.map((row: any) => ({
             ...row,
-            evaluation: JSON.parse(row.evaluation_json)
+            evaluation: typeof row.evaluation_json === 'string' ? JSON.parse(row.evaluation_json) : row.evaluation_json
         }));
 
         return NextResponse.json(results);
