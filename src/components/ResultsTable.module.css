@@ -1,0 +1,269 @@
+.wrapper {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.tableContainer {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Header */
+.headerRow th {
+    text-align: left;
+    padding: 1.25rem 1.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Rows */
+.row {
+    cursor: pointer;
+    transition: background 0.15s ease;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.row:last-child {
+    border-bottom: none;
+}
+
+.row:hover {
+    background: var(--bg-subtle);
+}
+
+.row.expanded {
+    background: var(--bg-subtle);
+    border-bottom-color: transparent;
+}
+
+.cell {
+    padding: 1.25rem 1.5rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+/* Rank */
+.rank {
+    font-family: monospace;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+/* Team Name */
+.teamCell {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 500;
+}
+
+.statusIndicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+}
+
+.statusShortlist {
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+}
+
+/* Score Badge */
+.scoreBadge {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.scoreHigh {
+    color: var(--success);
+}
+
+.scoreMid {
+    color: var(--warning);
+}
+
+.scoreLow {
+    color: var(--error);
+}
+
+/* Verdict Badge */
+.verdictBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.verdictShortlist {
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid rgba(0, 184, 148, 0.2);
+}
+
+.verdictReject {
+    background: var(--error-bg);
+    color: var(--error);
+    border: 1px solid rgba(234, 32, 39, 0.2);
+}
+
+/* Expanded View */
+.expandedRow {
+    background: rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.detailsGrid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 3rem;
+    padding: 2rem 3rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.sectionTitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.sectionLine {
+    height: 1px;
+    background: var(--border-subtle);
+    flex: 1;
+}
+
+/* Score Breakdown */
+.scoreItem {
+    margin-bottom: 1rem;
+}
+
+.scoreLabel {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.scoreValue {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.progressBar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #a29bfe);
+    border-radius: 3px;
+}
+
+/* Insights Grid */
+.insightsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.insightCard {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+
+.cardTitle {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cardTitle.gap {
+    color: var(--error);
+}
+
+.cardTitle.strength {
+    color: var(--success);
+}
+
+.cardTitle.weakness {
+    color: var(--warning);
+}
+
+.list {
+    list-style: none;
+}
+
+.listItem {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    position: relative;
+}
+
+.listItem::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+}
+
+.emptyState {
+    padding: 4rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 1024px) {
+    .detailsGrid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .insightsGrid {
+        grid-template-columns: 1fr;
+    }
+}

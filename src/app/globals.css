@@ -1,0 +1,146 @@
+:root {
+  /* Core Colors */
+  --bg-app: #0f1115;
+  /* Deepest dark */
+  --bg-panel: #16191f;
+  /* Component background */
+  --bg-subtle: #1c2128;
+  /* Hover states */
+
+  --text-primary: #ededed;
+  --text-secondary: #9aa0a6;
+  --text-muted: #6e7681;
+
+  /* Brand Colors */
+  --primary: #6c5ce7;
+  --primary-glow: rgba(108, 92, 231, 0.4);
+
+  --success: #00b894;
+  --success-bg: rgba(0, 184, 148, 0.1);
+
+  --error: #ea2027;
+  --error-bg: rgba(234, 32, 39, 0.1);
+
+  --warning: #fbc531;
+
+  /* Spacing & Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  --space-md: 1.5rem;
+  --space-lg: 3rem;
+
+  /* Fonts */
+  --font-heading: var(--font-outfit), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
+
+  /* Borders */
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.08);
+  --border-active: 1px solid rgba(108, 92, 231, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Typography Utility */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* Premium Buttons */
+.premium-button-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 100%);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  font-family: var(--font-outfit);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+}
+
+.premium-button-gradient::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent);
+  pointer-events: none;
+}
+
+.premium-button-gradient:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+}
+
+.premium-button-gradient:active {
+  transform: translateY(1px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-enter {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
