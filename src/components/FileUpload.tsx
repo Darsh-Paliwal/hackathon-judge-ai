@@ -33,6 +33,11 @@ export default function FileUpload({ onUploadSuccess }: UploadProps) {
             setError("Only .ppt or .pptx files are allowed.");
             return;
         }
+        // Vercel Serverless Function Limit is 4.5MB
+        if (f.size > 4.5 * 1024 * 1024) {
+            setError("File exceeds Vercel's 4.5MB limit. Please compress images or try a smaller file.");
+            return;
+        }
         setError(null);
         setFile(f);
     };
@@ -50,11 +55,20 @@ export default function FileUpload({ onUploadSuccess }: UploadProps) {
 
         try {
             const res = await fetch('/api/upload', { method: 'POST', body: formData });
+
+            // Handle non-JSON responses (e.g. Vercel 413/504 HTML errors)
+            const contentType = res.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error(`Server Error (${res.status}): Likely file size limit exceeded.`);
+            }
+
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Upload failed");
+
             setFile(null);
             onUploadSuccess();
         } catch (err) {
+            console.error(err);
             setError((err as Error).message);
         } finally {
             setIsUploading(false);
