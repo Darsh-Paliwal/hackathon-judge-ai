@@ -1,24 +1,29 @@
-
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import { blueprint } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
+// GET blueprint (criteria weights)
 export async function GET() {
-    const row = db.prepare('SELECT criteria_json FROM blueprint WHERE id = 1').get() as { criteria_json: string };
-    return NextResponse.json(JSON.parse(row.criteria_json));
+  return NextResponse.json(blueprint);
 }
 
+// UPDATE blueprint (in-memory)
 export async function POST(req: NextRequest) {
-    try {
-        const body = await req.json();
-        // Validate body structure briefly (optional but good)
+  try {
+    const body = await req.json();
 
-        const stmt = db.prepare('UPDATE blueprint SET criteria_json = ? WHERE id = 1');
-        stmt.run(JSON.stringify(body));
+    // Update blueprint in memory
+    Object.assign(blueprint, body);
 
-        return NextResponse.json({ success: true, blueprint: body });
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to update blueprint" }, { status: 500 });
-    }
+    return NextResponse.json({
+      success: true,
+      blueprint,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to update blueprint' },
+      { status: 500 }
+    );
+  }
 }

@@ -1,55 +1,28 @@
+// src/lib/db.ts (or wherever this file is)
 
-import Database from 'better-sqlite3';
-import path from 'path';
+export type Submission = {
+  id: number;
+  team_name: string;
+  team_id?: string;
+  track?: string;
+  filename: string;
+  upload_timestamp: string;
+  original_score?: number;
+  final_score?: number;
+  ai_verdict?: string;
+  admin_verdict?: string;
+  evaluation_json?: any;
+  status: "pending" | "shortlisted" | "rejected" | "hold";
+};
 
-const dbPath = path.join(process.cwd(), 'hackathon.db');
-const db = new Database(dbPath);
+// In-memory submissions store (resets on redeploy)
+export const submissions: Submission[] = [];
 
-// Initialize DB schema
-db.exec(`
-  CREATE TABLE IF NOT EXISTS submissions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    team_name TEXT,
-    team_id TEXT,
-    track TEXT,
-    filename TEXT,
-    upload_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    original_score INTEGER,
-    final_score INTEGER,
-    ai_verdict TEXT,
-    admin_verdict TEXT,
-    evaluation_json TEXT, -- Stores full JSON result from AI
-    status TEXT DEFAULT 'pending' -- pending, shortlisted, rejected, hold
-  );
-`);
-
-// Safe Migrations for existing DBs
-try { db.exec("ALTER TABLE submissions ADD COLUMN team_id TEXT"); } catch (e) { }
-try { db.exec("ALTER TABLE submissions ADD COLUMN track TEXT"); } catch (e) { }
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS blueprint(
-  id INTEGER PRIMARY KEY CHECK(id = 1),
-  criteria_json TEXT
-);
-
---Insert default blueprint if not exists
-  INSERT OR IGNORE INTO blueprint(id, criteria_json) VALUES(1, '{
-    "problem_understanding": { "weight": 30 },
-  "solution_approach": { "weight": 30 },
-  "innovation": { "weight": 30 },
-  "technical_feasibility": { "weight": 30 },
-  "presentation_quality": { "weight": 30 }
-  }');
-`);
-
-// Force update blueprint to new 150-point scale for existing users
-db.exec(`update blueprint set criteria_json = '{
-    "problem_understanding": { "weight": 30 },
-  "solution_approach": { "weight": 30 },
-  "innovation": { "weight": 30 },
-  "technical_feasibility": { "weight": 30 },
-  "presentation_quality": { "weight": 30 }
-}' where id = 1`);
-
-export default db;
+// Blueprint (static, in-memory)
+export const blueprint = {
+  problem_understanding: { weight: 30 },
+  solution_approach: { weight: 30 },
+  innovation: { weight: 30 },
+  technical_feasibility: { weight: 30 },
+  presentation_quality: { weight: 30 },
+};
