@@ -1,8 +1,7 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import { extractDataFromPPTX } from '@/lib/pptx-parser';
 import { evaluatePPT } from '@/lib/ai-service';
-import db from '@/lib/db';
+import { submissions, blueprint } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
     try {
@@ -22,39 +21,37 @@ export async function POST(req: NextRequest) {
         // 2. Parse PPTX (Text + Images)
         const pptData = await extractDataFromPPTX(arrayBuffer);
 
-        // 3. Get Blueprint
-        const blueprintRow = db.prepare('SELECT criteria_json FROM blueprint WHERE id = 1').get() as { criteria_json: string };
-        const blueprint = JSON.parse(blueprintRow.criteria_json);
+        // 3. Get Blueprint (Directly from memory)
+        // const blueprint is already imported
 
         // 4. AI Evaluation (Multimodal)
         const evaluation = await evaluatePPT(pptData, blueprint);
 
-        // 5. Store in DB
+        // 5. Store in In-Memory DB
         const filename = file.name;
         // Use provided team name or fallback to filename
         const finalTeamName = inputTeamName || filename.replace(/\.[^/.]+$/, "");
 
-        const insertStmt = db.prepare(`
-        INSERT INTO submissions (team_name, team_id, track, filename, original_score, final_score, ai_verdict, admin_verdict, evaluation_json, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
+        const newSubmission: any = {
+            id: Date.now(), // Simple number ID based on timestamp
+            team_name: finalTeamName,
+            team_id: teamId || null,
+            track: track || null,
+            filename: filename,
+            upload_timestamp: new Date().toISOString(),
+            original_score: evaluation.total_score,
+            final_score: evaluation.total_score,
+            ai_verdict: evaluation.verdict,
+            admin_verdict: evaluation.verdict,
+            evaluation_json: JSON.stringify(evaluation), // Keep as string to match old schema expectations or refactor frontend
+            status: evaluation.verdict === 'SHORTLIST' ? 'shortlisted' : 'rejected'
+        };
 
-        const result = insertStmt.run(
-            finalTeamName,
-            teamId || null,
-            track || null,
-            filename,
-            evaluation.total_score,
-            evaluation.total_score, // Initially same as original
-            evaluation.verdict,
-            evaluation.verdict, // Default admin verdict matches AI
-            JSON.stringify(evaluation),
-            evaluation.verdict === 'SHORTLIST' ? 'shortlisted' : 'rejected'
-        );
+        submissions.push(newSubmission);
 
         return NextResponse.json({
             success: true,
-            id: result.lastInsertRowid,
+            id: newSubmission.id,
             evaluation
         });
 
