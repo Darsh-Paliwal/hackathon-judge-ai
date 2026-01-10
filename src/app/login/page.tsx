@@ -8,8 +8,19 @@ import { Lock, User } from "lucide-react";
 export default function LoginPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleLogin = (role: 'admin' | 'viewer') => {
+        setError(""); // Clear previous errors
+
+        // Simple validation
+        if (!email.trim() || !password.trim()) {
+            setError("Please enter both email and password.");
+            return;
+        }
+
         setLoading(true);
 
         // Mock Auth Logic
@@ -32,13 +43,38 @@ export default function LoginPage() {
                 </div>
 
                 <div className={styles.form}>
+                    {error && (
+                        <div style={{
+                            color: 'var(--error)',
+                            backgroundColor: 'var(--error-bg)',
+                            padding: '0.75rem',
+                            borderRadius: 'var(--radius-sm)',
+                            fontSize: '0.9rem',
+                            marginBottom: '1rem',
+                            border: '1px solid var(--error)'
+                        }}>
+                            {error}
+                        </div>
+                    )}
                     <div className={styles.inputGroup}>
                         <label className={styles.label}>Email</label>
-                        <input type="email" placeholder="judge@hackathon.com" className={styles.input} />
+                        <input
+                            type="email"
+                            placeholder="judge@hackathon.com"
+                            className={styles.input}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
                     </div>
                     <div className={styles.inputGroup}>
                         <label className={styles.label}>Password</label>
-                        <input type="password" placeholder="••••••••" className={styles.input} />
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            className={styles.input}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
                     </div>
 
                     <button
